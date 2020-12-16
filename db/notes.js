@@ -24,6 +24,7 @@ class Note {
       return parseNotes;
     });
   }
+  
   addNote(note) {
     const { title, text } = note;
     const newNote = { title, text, id: nanoid() };
@@ -31,6 +32,12 @@ class Note {
       .then((notes) => [...notes, newNote])
       .then((updates) => this.write(updates))
       .then(() => newNote);
+  }
+
+  deleteNote(id) {
+    return this.getNotes()
+      .then((notes) => notes.filter( note => note.id !== id))
+      .then((filter) => this.write(filter))
   }
 }
 

@@ -2,27 +2,22 @@ const router = require("express").Router();
 const note = require("../db/notes");
 
 router.get("/notes", (req, res) => {
-    fs.readFile("../db/db.json", "utf8", (err, data) => {
-        if (err) throw err;
-        return res.json(JSON.parse(data));
-    });
+    note.getNotes()
+    .then( notes => res.json(notes))
+    .catch(err => res.status(500).json(err))
 });
 
 router.post("/notes", (req, res) => {
-    function appendNote(req) {
-    fs.readFile("../db/db.json", "utf8", (err, data) => {
-        if (err) throw err
-        let note = JSON.parse(data)
-        req.id = nanoid()
-        note.push(req)
-        fs.writeFile(db, JSON.stringify(note), (err) => {
-        if (err) return res.JSON({ err: "error updating" });
-        res.json({ msg: "successfully updated" });
-        });
-    })
-}
-appendNote(req.body)
+    note.addNote(req.body)
+    .then(note => res.json(note))
+    .catch(err => res.status(500).json(err))
 })  
+
+router.delete("/notes", (req,res) => {
+    note.deleteNote(req.params.id)
+    .then(() => res.json({ ok: true }))
+    .catch(err => res.status(500).json(err))
+})
 
 
 module.exports = router
