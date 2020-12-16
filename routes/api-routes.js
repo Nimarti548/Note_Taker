@@ -11,6 +11,21 @@ router.get("/notes", (req, res) => {
     });
 });
 
+router.post("/notes", (req, res) => {
+    function appendNote(req) {
+    fs.readFile(db, "utf8", (err, data) => {
+        if (err) throw err
+        let note = JSON.parse(data)
+        req.id = nanoid()
+        note.push(req)
+        fs.writeFile(db, JSON.stringify(note), (err) => {
+        if (err) return res.JSON({ err: "error updating" });
+        res.json({ msg: "successfully updated" });
+        });
+    })
+}
+appendNote(req.body)
+})  
 
 
  
